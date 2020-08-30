@@ -28,17 +28,21 @@ __lock___atexit_recursive_mutex
                     0x1               c:/ac6/systemworkbench/plugins/fr.ac6.mcu.externaltools.arm-none.win32_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libc.a(lib_a-lock.o)
 __lock___arc4random_mutex
                     0x1               c:/ac6/systemworkbench/plugins/fr.ac6.mcu.externaltools.arm-none.win32_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libc.a(lib_a-lock.o)
+usart_serialReceived
+                    0x1               src/main.o
 __lock___env_recursive_mutex
                     0x1               c:/ac6/systemworkbench/plugins/fr.ac6.mcu.externaltools.arm-none.win32_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libc.a(lib_a-lock.o)
 __lock___sinit_recursive_mutex
                     0x1               c:/ac6/systemworkbench/plugins/fr.ac6.mcu.externaltools.arm-none.win32_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libc.a(lib_a-lock.o)
 __lock___malloc_recursive_mutex
                     0x1               c:/ac6/systemworkbench/plugins/fr.ac6.mcu.externaltools.arm-none.win32_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libc.a(lib_a-lock.o)
+usart_nrOfByte      0x2               src/main.o
 __lock___at_quick_exit_mutex
                     0x1               c:/ac6/systemworkbench/plugins/fr.ac6.mcu.externaltools.arm-none.win32_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libc.a(lib_a-lock.o)
 __lock___dd_hash_mutex
                     0x1               c:/ac6/systemworkbench/plugins/fr.ac6.mcu.externaltools.arm-none.win32_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libc.a(lib_a-lock.o)
 __lock___tz_mutex   0x1               c:/ac6/systemworkbench/plugins/fr.ac6.mcu.externaltools.arm-none.win32_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libc.a(lib_a-lock.o)
+usart_rxBuffer      0xff              src/main.o
 __lock___sfp_recursive_mutex
                     0x1               c:/ac6/systemworkbench/plugins/fr.ac6.mcu.externaltools.arm-none.win32_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libc.a(lib_a-lock.o)
 
@@ -102,6 +106,7 @@ Discarded input sections
  .text          0x00000000        0x0 src/main.o
  .data          0x00000000        0x0 src/main.o
  .bss           0x00000000        0x0 src/main.o
+ COMMON         0x00000000      0x103 src/main.o
  .group         0x00000000        0xc src/syscalls.o
  .group         0x00000000        0xc src/syscalls.o
  .group         0x00000000        0xc src/syscalls.o
@@ -410,6 +415,7 @@ LOAD src/syscalls.o
 LOAD src/system_stm32f4xx.o
 LOAD startup/startup_stm32.o
 LOAD C:\work\workspace_stm\nucleo-f446re_stdperiph_lib\Debug\libnucleo-f446re_stdperiph_lib.a
+LOAD C:\work\workspace_stm\lib_uart\Debug\liblib_uart.a
 LOAD c:/ac6/systemworkbench/plugins/fr.ac6.mcu.externaltools.arm-none.win32_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libm.a
 START GROUP
 LOAD c:/ac6/systemworkbench/plugins/fr.ac6.mcu.externaltools.arm-none.win32_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/thumb/v7e-m/fpv4-sp/hard\libgcc.a
@@ -726,15 +732,15 @@ LOAD c:/ac6/systemworkbench/plugins/fr.ac6.mcu.externaltools.arm-none.win32_1.17
                 0x00000255       0x22 c:/ac6/systemworkbench/plugins/fr.ac6.mcu.externaltools.arm-none.win32_1.17.0.201812190825/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.3.1/thumb/v7e-m/fpv4-sp/hard/crtn.o
 OUTPUT(f446re_dac.elf elf32-littlearm)
 
-.debug_info     0x00000000      0x710
- .debug_info    0x00000000       0xcd src/main.o
- .debug_info    0x000000cd      0x621 src/system_stm32f4xx.o
- .debug_info    0x000006ee       0x22 startup/startup_stm32.o
+.debug_info     0x00000000      0x7ba
+ .debug_info    0x00000000      0x177 src/main.o
+ .debug_info    0x00000177      0x621 src/system_stm32f4xx.o
+ .debug_info    0x00000798       0x22 startup/startup_stm32.o
 
-.debug_abbrev   0x00000000      0x1ec
- .debug_abbrev  0x00000000       0x7d src/main.o
- .debug_abbrev  0x0000007d      0x15d src/system_stm32f4xx.o
- .debug_abbrev  0x000001da       0x12 startup/startup_stm32.o
+.debug_abbrev   0x00000000      0x23f
+ .debug_abbrev  0x00000000       0xd0 src/main.o
+ .debug_abbrev  0x000000d0      0x15d src/system_stm32f4xx.o
+ .debug_abbrev  0x0000022d       0x12 startup/startup_stm32.o
 
 .debug_aranges  0x00000000       0x78
  .debug_aranges
@@ -749,65 +755,65 @@ OUTPUT(f446re_dac.elf elf32-littlearm)
  .debug_ranges  0x00000010       0x20 src/system_stm32f4xx.o
  .debug_ranges  0x00000030       0x20 startup/startup_stm32.o
 
-.debug_macro    0x00000000    0x10e8a
- .debug_macro   0x00000000      0x1ee src/main.o
- .debug_macro   0x000001ee      0xa72 src/main.o
- .debug_macro   0x00000c60       0x65 src/main.o
- .debug_macro   0x00000cc5       0x3b src/main.o
- .debug_macro   0x00000d00       0x22 src/main.o
- .debug_macro   0x00000d22       0x8e src/main.o
- .debug_macro   0x00000db0       0x51 src/main.o
- .debug_macro   0x00000e01       0xef src/main.o
- .debug_macro   0x00000ef0       0x6a src/main.o
- .debug_macro   0x00000f5a      0x1df src/main.o
- .debug_macro   0x00001139       0x34 src/main.o
- .debug_macro   0x0000116d       0x26 src/main.o
- .debug_macro   0x00001193      0xe43 src/main.o
- .debug_macro   0x00001fd6     0x9f98 src/main.o
- .debug_macro   0x0000bf6e      0x448 src/main.o
- .debug_macro   0x0000c3b6       0xb2 src/main.o
- .debug_macro   0x0000c468      0x477 src/main.o
- .debug_macro   0x0000c8df       0xb5 src/main.o
- .debug_macro   0x0000c994      0x41c src/main.o
- .debug_macro   0x0000cdb0      0x341 src/main.o
- .debug_macro   0x0000d0f1      0x2ba src/main.o
- .debug_macro   0x0000d3ab       0x64 src/main.o
- .debug_macro   0x0000d40f      0x100 src/main.o
- .debug_macro   0x0000d50f      0x76d src/main.o
- .debug_macro   0x0000dc7c      0x59e src/main.o
- .debug_macro   0x0000e21a      0x342 src/main.o
- .debug_macro   0x0000e55c      0x36c src/main.o
- .debug_macro   0x0000e8c8      0x114 src/main.o
- .debug_macro   0x0000e9dc      0x73b src/main.o
- .debug_macro   0x0000f117      0x223 src/main.o
- .debug_macro   0x0000f33a       0x34 src/main.o
- .debug_macro   0x0000f36e       0x82 src/main.o
- .debug_macro   0x0000f3f0      0x144 src/main.o
- .debug_macro   0x0000f534       0xc3 src/main.o
- .debug_macro   0x0000f5f7      0x3cf src/main.o
- .debug_macro   0x0000f9c6      0x188 src/main.o
- .debug_macro   0x0000fb4e      0x149 src/main.o
- .debug_macro   0x0000fc97      0x21e src/main.o
- .debug_macro   0x0000feb5      0x23a src/main.o
- .debug_macro   0x000100ef      0x359 src/main.o
- .debug_macro   0x00010448      0x287 src/main.o
- .debug_macro   0x000106cf      0x29a src/main.o
- .debug_macro   0x00010969      0x142 src/main.o
- .debug_macro   0x00010aab      0x191 src/main.o
- .debug_macro   0x00010c3c       0x35 src/main.o
- .debug_macro   0x00010c71      0x219 src/system_stm32f4xx.o
+.debug_macro    0x00000000    0x10e9e
+ .debug_macro   0x00000000      0x202 src/main.o
+ .debug_macro   0x00000202      0xa72 src/main.o
+ .debug_macro   0x00000c74       0x65 src/main.o
+ .debug_macro   0x00000cd9       0x3b src/main.o
+ .debug_macro   0x00000d14       0x22 src/main.o
+ .debug_macro   0x00000d36       0x8e src/main.o
+ .debug_macro   0x00000dc4       0x51 src/main.o
+ .debug_macro   0x00000e15       0xef src/main.o
+ .debug_macro   0x00000f04       0x6a src/main.o
+ .debug_macro   0x00000f6e      0x1df src/main.o
+ .debug_macro   0x0000114d       0x34 src/main.o
+ .debug_macro   0x00001181       0x26 src/main.o
+ .debug_macro   0x000011a7      0xe43 src/main.o
+ .debug_macro   0x00001fea     0x9f98 src/main.o
+ .debug_macro   0x0000bf82      0x448 src/main.o
+ .debug_macro   0x0000c3ca       0xb2 src/main.o
+ .debug_macro   0x0000c47c      0x477 src/main.o
+ .debug_macro   0x0000c8f3       0xb5 src/main.o
+ .debug_macro   0x0000c9a8      0x41c src/main.o
+ .debug_macro   0x0000cdc4      0x341 src/main.o
+ .debug_macro   0x0000d105      0x2ba src/main.o
+ .debug_macro   0x0000d3bf       0x64 src/main.o
+ .debug_macro   0x0000d423      0x100 src/main.o
+ .debug_macro   0x0000d523      0x76d src/main.o
+ .debug_macro   0x0000dc90      0x59e src/main.o
+ .debug_macro   0x0000e22e      0x342 src/main.o
+ .debug_macro   0x0000e570      0x36c src/main.o
+ .debug_macro   0x0000e8dc      0x114 src/main.o
+ .debug_macro   0x0000e9f0      0x73b src/main.o
+ .debug_macro   0x0000f12b      0x223 src/main.o
+ .debug_macro   0x0000f34e       0x34 src/main.o
+ .debug_macro   0x0000f382       0x82 src/main.o
+ .debug_macro   0x0000f404      0x144 src/main.o
+ .debug_macro   0x0000f548       0xc3 src/main.o
+ .debug_macro   0x0000f60b      0x3cf src/main.o
+ .debug_macro   0x0000f9da      0x188 src/main.o
+ .debug_macro   0x0000fb62      0x149 src/main.o
+ .debug_macro   0x0000fcab      0x21e src/main.o
+ .debug_macro   0x0000fec9      0x23a src/main.o
+ .debug_macro   0x00010103      0x359 src/main.o
+ .debug_macro   0x0001045c      0x287 src/main.o
+ .debug_macro   0x000106e3      0x29a src/main.o
+ .debug_macro   0x0001097d      0x142 src/main.o
+ .debug_macro   0x00010abf      0x191 src/main.o
+ .debug_macro   0x00010c50       0x35 src/main.o
+ .debug_macro   0x00010c85      0x219 src/system_stm32f4xx.o
 
-.debug_line     0x00000000      0xe0d
- .debug_line    0x00000000      0x677 src/main.o
- .debug_line    0x00000677      0x71a src/system_stm32f4xx.o
- .debug_line    0x00000d91       0x7c startup/startup_stm32.o
+.debug_line     0x00000000      0xe3e
+ .debug_line    0x00000000      0x6a8 src/main.o
+ .debug_line    0x000006a8      0x71a src/system_stm32f4xx.o
+ .debug_line    0x00000dc2       0x7c startup/startup_stm32.o
 
-.debug_str      0x00000000    0x6cef0
- .debug_str     0x00000000    0x6cc40 src/main.o
-                              0x6cebd (size before relaxing)
- .debug_str     0x0006cc40      0x287 src/system_stm32f4xx.o
+.debug_str      0x00000000    0x6cf49
+ .debug_str     0x00000000    0x6ccb4 src/main.o
+                              0x6cf4d (size before relaxing)
+ .debug_str     0x0006ccb4      0x26c src/system_stm32f4xx.o
                               0x6d14c (size before relaxing)
- .debug_str     0x0006cec7       0x29 startup/startup_stm32.o
+ .debug_str     0x0006cf20       0x29 startup/startup_stm32.o
                                  0x50 (size before relaxing)
 
 .comment        0x00000000       0x7f

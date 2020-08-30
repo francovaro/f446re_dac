@@ -10,10 +10,14 @@
 
 
 #include "stm32f4xx.h"
+#include "inc\lib_uart.h"
 			
 
 int main(void)
 {
 
-	for(;;);
+	while(1)
+	{
+
+	}
 }
