@@ -16,6 +16,8 @@
 int main(void)
 {
 
+	UART_lib_config(e_UART_2, DISABLE);
+
 	while(1)
 	{
 
