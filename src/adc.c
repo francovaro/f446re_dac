@@ -48,10 +48,10 @@ void ADC_DMA_Init(void)
 
 	/* Config PIN */
 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
-	GPIO_InitStructure.GPIO_Pin = ( GPIO_Pin_0 );
+	GPIO_InitStructure.GPIO_Pin = ( GPIO_Pin_1 );
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AN;
 	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-	GPIO_Init(GPIOF , &GPIO_InitStructure);
+	GPIO_Init(GPIOA , &GPIO_InitStructure);
 
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1, ENABLE);	// ADC1 is using APB2 => 90 MHz
 
@@ -82,12 +82,12 @@ void ADC_DMA_Init(void)
 	 * Total conversion time
 	 * (15+15)*(1/22.5MHz) = 1.22us
 	 */
-	ADC_RegularChannelConfig(ADC1, ADC_Channel_0, 1, ADC_SampleTime_15Cycles);
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_1, 1u, ADC_SampleTime_15Cycles);
 
-	ADC_DMARequestAfterLastTransferCmd(ADC3, ENABLE);
-	ADC_DMACmd(ADC3, ENABLE); /* Enable ADC1 DMA */
+	ADC_DMARequestAfterLastTransferCmd(ADC1, ENABLE);
+	ADC_DMACmd(ADC1, ENABLE); /* Enable ADC1 DMA */
 
-	ADC_Cmd(ADC3, ENABLE);
+	ADC_Cmd(ADC1, ENABLE);
 }
 /**
  * @brief return ADC read value
@@ -129,7 +129,7 @@ static void DMA_ADC_Config(void)
 	DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_HalfWord;
 	DMA_InitStructure.DMA_MemoryDataSize = DMA_MemoryDataSize_HalfWord;
 	DMA_InitStructure.DMA_Mode = DMA_Mode_Circular;
-	DMA_InitStructure.DMA_Priority = DMA_Priority_Medium;
+	DMA_InitStructure.DMA_Priority = DMA_Priority_High;
 	DMA_InitStructure.DMA_FIFOMode = DMA_FIFOMode_Disable;	// not sure
 	DMA_InitStructure.DMA_FIFOThreshold = DMA_FIFOThreshold_HalfFull;
 	DMA_InitStructure.DMA_MemoryBurst = DMA_MemoryBurst_Single;
@@ -138,7 +138,6 @@ static void DMA_ADC_Config(void)
 	DMA_Init(DMA2_Stream0, &DMA_InitStructure);
 
 	DMA_ITConfig(DMA2_Stream0, DMA_IT_TC | DMA_IT_HT,  ENABLE);
-	DMA_Cmd(DMA2_Stream0, ENABLE);
 
 	gDMA_ADC_FT_event = RESET;
 	gDMA_ADC_HT_event = RESET;
@@ -146,6 +145,8 @@ static void DMA_ADC_Config(void)
 	//while(DMA_GetCmdStatus(DMA2_Stream0)!=ENABLE);		//check if DMA is ready
 
 	DMA_NVIC_Configuration();
+
+	DMA_Cmd(DMA2_Stream0, ENABLE);
 }
 
 /**

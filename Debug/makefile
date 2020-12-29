@@ -30,8 +30,8 @@ endif
 all: f446re_dac.elf
 
 dependents:
-	-cd C:/work/workspace_stm/nucleo-f446re_stdperiph_lib/Debug && $(MAKE) clean all
-	-cd C:/work/workspace_stm/lib_uart/Debug && $(MAKE) clean all
+	-cd C:/work/workspace_stm/nucleo-f446re_stdperiph_lib/Debug && $(MAKE) all
+	-cd C:/work/workspace_stm/lib_uart/Debug && $(MAKE) all
 
 # Tool invocations
 f446re_dac.elf: $(OBJS) $(USER_OBJS) C:/work/workspace_stm/nucleo-f446re_stdperiph_lib/Debug/libnucleo-f446re_stdperiph_lib.a C:/work/workspace_stm/lib_uart/Debug/liblib_uart.a C:\work\workspace_stm\f446re_dac/LinkerScript.ld
