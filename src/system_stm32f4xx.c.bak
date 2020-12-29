@@ -339,11 +339,11 @@
 /* #define DATA_IN_ExtSRAM */
 #endif /* STM32F40_41xxx || STM32F427_437x || STM32F429_439xx || STM32F469_479xx || STM32F413_423xx */
 
-#if defined(STM32F427_437xx) || defined(STM32F429_439xx)  || defined(STM32F469_479xx)
+#if defined(STM32F427_437xx) || defined(STM32F429_439xx) || defined(STM32F446xx) || defined(STM32F469_479xx)
 /* #define DATA_IN_ExtSDRAM */
 #endif /* STM32F427_437x || STM32F429_439xx || STM32F446xx || STM32F469_479xx */ 
 
-#if defined(STM32F410xx) || defined(STM32F411xE) || defined(STM32F446xx)
+#if defined(STM32F410xx) || defined(STM32F411xE)
 /*!< Uncomment the following line if you need to clock the STM32F410xx/STM32F411xE by HSE Bypass
      through STLINK MCO pin of STM32F103 microcontroller. The frequency cannot be changed
      and is fixed at 8 MHz. 
@@ -351,7 +351,7 @@
      – SB54, SB55 OFF
      – R35 removed
      – SB16, SB50 ON */
-#define USE_HSE_BYPASS
+/* #define USE_HSE_BYPASS */
 
 #if defined(USE_HSE_BYPASS)     
 #define HSE_BYPASS_INPUT_FREQUENCY   8000000
@@ -369,7 +369,7 @@
 #if defined(STM32F40_41xxx) || defined(STM32F427_437xx) || defined(STM32F429_439xx) || defined(STM32F401xx) || defined(STM32F469_479xx)
  /* PLL_VCO = (HSE_VALUE or HSI_VALUE / PLL_M) * PLL_N */
  #define PLL_M      25
-#elif defined(STM32F412xG) || defined(STM32F413_423xx)
+#elif defined(STM32F412xG) || defined(STM32F413_423xx) || defined (STM32F446xx)
  #define PLL_M      8
 #elif defined (STM32F410xx) || defined (STM32F411xE)
  #if defined(USE_HSE_BYPASS)
@@ -377,14 +377,7 @@
  #else /* !USE_HSE_BYPASS */
   #define PLL_M      16
  #endif /* USE_HSE_BYPASS */
-#elif defined (STM32F410xx) || defined (STM32F411xE) || defined (STM32F446xx)
- #if defined(USE_HSE_BYPASS)
-  #define PLL_M      4
- #else /* !USE_HSE_BYPASS */
-  #define PLL_M      8
- #endif /* USE_HSE_BYPASS */
 #else
-
 #endif /* STM32F40_41xxx || STM32F427_437xx || STM32F429_439xx || STM32F401xx || STM32F469_479xx */  
 
 /* USB OTG FS, SDIO and RNG Clock =  PLL_VCO / PLLQ */
@@ -392,7 +385,7 @@
 
 #if defined(STM32F446xx)
 /* PLL division factor for I2S, SAI, SYSTEM and SPDIF: Clock =  PLL_VCO / PLLR */
-#define PLL_R      2	// was 7
+#define PLL_R      7
 #elif defined(STM32F412xG) || defined(STM32F413_423xx)
 #define PLL_R      2
 #else
@@ -567,7 +560,7 @@ void SystemInit(void)
 void SystemCoreClockUpdate(void)
 {
   uint32_t tmp = 0, pllvco = 0, pllp = 2, pllsource = 0, pllm = 2;
-#if defined(STM32F412xG) || defined(STM32F413_423xx)
+#if defined(STM32F412xG) || defined(STM32F413_423xx) || defined(STM32F446xx)  
   uint32_t pllr = 2;
 #endif /* STM32F412xG || STM32F413_423xx || STM32F446xx */
   /* Get SYSCLK source -------------------------------------------------------*/
@@ -579,11 +572,7 @@ void SystemCoreClockUpdate(void)
       SystemCoreClock = HSI_VALUE;
       break;
     case 0x04:  /* HSE used as system clock source */
-#if defined(USE_HSE_BYPASS)
-      SystemCoreClock = HSE_BYPASS_INPUT_FREQUENCY;
-#else
       SystemCoreClock = HSE_VALUE;
-#endif
       break;
     case 0x08:  /* PLL P used as system clock source */
        /* PLL_VCO = (HSE_VALUE or HSI_VALUE / PLL_M) * PLL_N
@@ -592,7 +581,7 @@ void SystemCoreClockUpdate(void)
       pllsource = (RCC->PLLCFGR & RCC_PLLCFGR_PLLSRC) >> 22;
       pllm = RCC->PLLCFGR & RCC_PLLCFGR_PLLM;
       
-#if defined(STM32F40_41xxx) || defined(STM32F427_437xx) || defined(STM32F429_439xx) || defined(STM32F401xx) || defined(STM32F412xG) || defined(STM32F413_423xx)  || defined(STM32F469_479xx)
+#if defined(STM32F40_41xxx) || defined(STM32F427_437xx) || defined(STM32F429_439xx) || defined(STM32F401xx) || defined(STM32F412xG) || defined(STM32F413_423xx) || defined(STM32F446xx) || defined(STM32F469_479xx)
       if (pllsource != 0)
       {
         /* HSE used as PLL clock source */
@@ -603,7 +592,7 @@ void SystemCoreClockUpdate(void)
         /* HSI used as PLL clock source */
         pllvco = (HSI_VALUE / pllm) * ((RCC->PLLCFGR & RCC_PLLCFGR_PLLN) >> 6);
       }
-#elif defined(STM32F410xx) || defined(STM32F411xE) || defined(STM32F446xx)
+#elif defined(STM32F410xx) || defined(STM32F411xE)
 #if defined(USE_HSE_BYPASS)
       if (pllsource != 0)
       {
@@ -621,7 +610,7 @@ void SystemCoreClockUpdate(void)
       pllp = (((RCC->PLLCFGR & RCC_PLLCFGR_PLLP) >>16) + 1 ) *2;
       SystemCoreClock = pllvco/pllp;      
       break;
-#if defined(STM32F412xG) || defined(STM32F413_423xx) //|| defined(STM32F446xx)
+#if defined(STM32F412xG) || defined(STM32F413_423xx) || defined(STM32F446xx)      
       case 0x0C:  /* PLL R used as system clock source */
        /* PLL_VCO = (HSE_VALUE or HSI_VALUE / PLL_M) * PLL_N
          SYSCLK = PLL_VCO / PLL_R
@@ -671,11 +660,8 @@ static void SetSysClock(void)
   __IO uint32_t StartUpCounter = 0, HSEStatus = 0;
   
   /* Enable HSE */
-#if defined(USE_HSE_BYPASS)
-  RCC->CR |= ((uint32_t)RCC_CR_HSEON | RCC_CR_HSEBYP);
-#else
   RCC->CR |= ((uint32_t)RCC_CR_HSEON);
-#endif
+ 
   /* Wait till HSE is ready and if Time out is reached exit */
   do
   {
@@ -717,13 +703,13 @@ static void SetSysClock(void)
     RCC->CFGR |= RCC_CFGR_PPRE1_DIV2;
 #endif /* STM32F401xx || STM32F413_423xx */
 
-#if defined(STM32F40_41xxx) || defined(STM32F427_437xx) || defined(STM32F429_439xx) || defined(STM32F401xx) || defined(STM32F469_479xx)|| defined(STM32F446xx)
+#if defined(STM32F40_41xxx) || defined(STM32F427_437xx) || defined(STM32F429_439xx) || defined(STM32F401xx) || defined(STM32F469_479xx)    
     /* Configure the main PLL */
     RCC->PLLCFGR = PLL_M | (PLL_N << 6) | (((PLL_P >> 1) -1) << 16) |
                    (RCC_PLLCFGR_PLLSRC_HSE) | (PLL_Q << 24);
 #endif /* STM32F40_41xxx || STM32F401xx || STM32F427_437x || STM32F429_439xx || STM32F469_479xx */
 
-#if  defined(STM32F412xG) || defined(STM32F413_423xx)
+#if  defined(STM32F412xG) || defined(STM32F413_423xx) || defined(STM32F446xx)
     /* Configure the main PLL */
     RCC->PLLCFGR = PLL_M | (PLL_N << 6) | (((PLL_P >> 1) -1) << 16) |
                    (RCC_PLLCFGR_PLLSRC_HSI) | (PLL_Q << 24) | (PLL_R << 28);
@@ -771,7 +757,7 @@ static void SetSysClock(void)
     RCC->CFGR |= RCC_CFGR_SW_PLL;
 
     /* Wait till the main PLL is used as system clock source */
-    while ((RCC->CFGR & (uint32_t)RCC_CFGR_SWS ) != RCC_CFGR_SWS_PLL)
+    while ((RCC->CFGR & (uint32_t)RCC_CFGR_SWS ) != RCC_CFGR_SWS_PLL);
     {
     }
   }

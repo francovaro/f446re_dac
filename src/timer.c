@@ -97,6 +97,10 @@ void TIM7_Config(uint16_t period, uint16_t prescaler)
  */
 void TIM2_Config(void)
 {
+	RCC_ClocksTypeDef 			RCC_ClocksStatus;
+
+	RCC_GetClocksFreq(&RCC_ClocksStatus);
+	uint16_t prescaler = ((RCC_ClocksStatus.PCLK1_Frequency*2)) / 1000000  - 1; //1 tick = 1us
 	/* TIM2CLK = HCLK / 4 = SystemCoreClock /2 = 90 MHz*/
 
 	TIM_TimeBaseInitTypeDef    TIM_TimeBaseStructure;
@@ -106,10 +110,11 @@ void TIM2_Config(void)
 	/* Time base configuration */
 	TIM_TimeBaseStructInit(&TIM_TimeBaseStructure);
 
-	TIM_TimeBaseStructure.TIM_Period = (100 - 1);
-	TIM_TimeBaseStructure.TIM_Prescaler = (90 - 1);
-	// Sampling an Audio signal: Fsampl >= 7KHz
-	// with this setting: 90E6/((100)*(90)) = 10KHz
+	TIM_TimeBaseStructure.TIM_Period = 23;	/* 23 ms*/
+	TIM_TimeBaseStructure.TIM_Prescaler = prescaler;
+	/*
+	 * sampling wit f = 43.47 kHz
+	 */
 
 	TIM_TimeBaseStructure.TIM_ClockDivision = 0;
 	TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
