@@ -110,7 +110,7 @@ void TIM2_Config(void)
 	/* Time base configuration */
 	TIM_TimeBaseStructInit(&TIM_TimeBaseStructure);
 
-	TIM_TimeBaseStructure.TIM_Period = 23;	/* 23 ms*/
+	TIM_TimeBaseStructure.TIM_Period = 22;	/* 22 us*/
 	TIM_TimeBaseStructure.TIM_Prescaler = prescaler;
 	/*
 	 * sampling wit f = 43.47 kHz

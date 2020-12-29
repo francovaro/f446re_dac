@@ -27,6 +27,9 @@ static void DMA_NVIC_Configuration(void);
  * @brief Init ADC peripheral with DMA and triggered by TIM
  * @param void
  * @return void
+ *
+ * @note:	ADC1 channel 0
+ * 			ADCCLK => APB2/4 -> 22.5 MHz ?
  */
 void ADC_DMA_Init(void)
 {
@@ -36,7 +39,7 @@ void ADC_DMA_Init(void)
 
 	/* configure DMA for ADC */
 	DMA_ADC_Config();
-	// PF6 ADC3 channel 4
+	// PA0 ADC1 channel 0
 
 	/* Initialize structures */
 	GPIO_StructInit(&GPIO_InitStructure);
@@ -50,7 +53,7 @@ void ADC_DMA_Init(void)
 	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
 	GPIO_Init(GPIOF , &GPIO_InitStructure);
 
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1, ENABLE);	// ADC3 is using APB2 => 90 MHz
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1, ENABLE);	// ADC1 is using APB2 => 90 MHz
 
 	/* ADC Common Init */
 	ADC_CommonInitStructure.ADC_Mode = ADC_Mode_Independent ;					//0 ;
@@ -73,8 +76,11 @@ void ADC_DMA_Init(void)
 	ADC_Init(ADC1 , &ADC_InitStructure);
 
 	/*
-	 * ADC convesrion time: 15 cycles
-	 * = 15*(1/45Mhz) = 3.33E-7 => 0.33 mS
+	 * ADC conversion time: 15 cycles
+	 * = 15*(1/22.5Mhz) = 6.66E-7 => 0.66 uS
+	 * = 15*(1/45Mhz) = 3.33E-7 => 0.33 uS
+	 * Total conversion time
+	 * (15+15)*(1/22.5MHz) = 1.22us
 	 */
 	ADC_RegularChannelConfig(ADC1, ADC_Channel_0, 1, ADC_SampleTime_15Cycles);
 
