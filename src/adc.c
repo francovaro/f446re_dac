@@ -24,11 +24,12 @@ static void DMA_NVIC_Configuration(void);
 
 /* Public function */
 /**
- * @brief Init ADC peripheral with DMA and triggered by TIM
+ * @brief Init ADC peripheral with DMA use and triggered by TIM
  * @param void
  * @return void
  *
  * @note:	ADC1 channel 0
+ * 			GPIOA 1
  * 			ADCCLK => APB2/4 -> 22.5 MHz ?
  */
 void ADC_DMA_Init(void)
@@ -56,23 +57,21 @@ void ADC_DMA_Init(void)
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1, ENABLE);	// ADC1 is using APB2 => 90 MHz
 
 	/* ADC Common Init */
-	ADC_CommonInitStructure.ADC_Mode = ADC_Mode_Independent ;					//0 ;
-	ADC_CommonInitStructure.ADC_Prescaler = ADC_Prescaler_Div4;					//  ADCCLK => APB2/4 -> 22.5 mhz ?
-	ADC_CommonInitStructure.ADC_DMAAccessMode = ADC_DMAAccessMode_Disabled;		/* for multi ADC !*/
+	ADC_CommonInitStructure.ADC_Mode = ADC_Mode_Independent ;						// 0 ;
+	ADC_CommonInitStructure.ADC_Prescaler = ADC_Prescaler_Div4;						//  ADCCLK => APB2/4 -> 22.5 mhz ?
+	ADC_CommonInitStructure.ADC_DMAAccessMode = ADC_DMAAccessMode_Disabled;			/* for multi ADC ! so disabled in our case */
 	ADC_CommonInitStructure.ADC_TwoSamplingDelay = ADC_TwoSamplingDelay_5Cycles;
 	ADC_CommonInit(&ADC_CommonInitStructure);
 
 	/* ADC Init */
 	ADC_InitStructure.ADC_Resolution = ADC_Resolution_12b;
 	ADC_InitStructure.ADC_ScanConvMode = DISABLE;
-
-	ADC_InitStructure.ADC_ContinuousConvMode = DISABLE;	// TIM8 will trigger
-
-	ADC_InitStructure.ADC_ExternalTrigConvEdge = ADC_ExternalTrigConvEdge_Rising;
-	ADC_InitStructure.ADC_ExternalTrigConv = ADC_ExternalTrigConv_T2_TRGO; // sure ?
-
+	ADC_InitStructure.ADC_ContinuousConvMode = DISABLE;								/* no continuous */
+	ADC_InitStructure.ADC_ExternalTrigConvEdge = ADC_ExternalTrigConvEdge_Rising;	/* triggered with a rising signal */
+	ADC_InitStructure.ADC_ExternalTrigConv = ADC_ExternalTrigConv_T2_TRGO; 			/* start of ADC is triggered by TIM2 */
 	ADC_InitStructure.ADC_DataAlign = ADC_DataAlign_Right;
 	ADC_InitStructure.ADC_NbrOfConversion = 1;
+
 	ADC_Init(ADC1 , &ADC_InitStructure);
 
 	/*

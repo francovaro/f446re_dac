@@ -3,8 +3,8 @@
  *	
  *  @brief	
  *
- *  @author: franc
- *  @date  : 07 ott 2020
+ *  @author: Francesco Varani
+ *  @date  : 06 Gennaio 2021
  */
 
 #ifndef INC_DAC_H_

@@ -3,8 +3,8 @@
  *	
  *  @brief	
  *
- *  @author: franc
- *  @date  : 30 ago 2020
+ *  @author: Francesco Varani
+ *  @date  : 06 Gennaio 2021
  */
 /* Libraries */
 #include "stm32f4xx_dac.h"
@@ -34,16 +34,16 @@ static void DMA_DAC_NVIC_Configuration(t_dac_channel channel);
 /* Public function */
 /**
  * @brief Init DAC peripheral
- * @param function The ouput function to output
- * @param channel The channel to configure
+ * @param function The output function to output
+ * @param channel The channel to be configured
  * @return 0 if OK
  */
 uint8_t DAC_initialization(t_dac_function function, t_dac_channel channel)
 {
-	uint8_t retVal = 0;
-	DAC_InitTypeDef  DAC_InitStructure;
-	uint32_t DAC_Channel_var;
-	uint32_t trgo_source;
+	uint8_t 			retVal = RESET;
+	DAC_InitTypeDef		DAC_InitStructure;
+	uint32_t 			DAC_Channel_var;
+	uint32_t 			trgo_source;
 
 	DAC_StructInit(&DAC_InitStructure);
 
@@ -51,147 +51,161 @@ uint8_t DAC_initialization(t_dac_function function, t_dac_channel channel)
 	{
 		DAC_Channel_var = DAC_Channel_1;
 		trgo_source = DAC_Trigger_T6_TRGO;
+		retVal = SET;
 	}
 	else if (channel == e_dac_channel_2)
 	{
 		DAC_Channel_var = DAC_Channel_2;
 		trgo_source = DAC_Trigger_T7_TRGO;
+		retVal = SET;
 	}
 	else
 	{
-		return 1;
+		/*
+		 *
+		 */
 	}
 
-	switch(function)
+	if (retVal == SET)
 	{
-		case e_dac_escalator:
+		switch(function)
 		{
-			/*
-			 * TODO
-			 */
+			case e_dac_escalator:
+			{
+				/*
+				 * TODO
+				 */
+			}
+			break;
+			case e_dac_sine:	/* feed DAC with sampled sine */
+			{
+				if (channel == e_dac_channel_1)
+				{
+					_dac_buffer_index_ch1 = 0;
+					/* Set DAC channel1 DHR12RD register */
+					DAC_SetChannel1Data(DAC_Align_12b_R, 0x050);
+					TIM6_Config(281, 1);
+				}
+				else if (channel == e_dac_channel_2)
+				{
+					_dac_buffer_index_ch2 = 0;
+					/* Set DAC channel2 DHR12RD register */
+					DAC_SetChannel2Data(DAC_Align_12b_R, 0x050);
+					TIM7_Config(0xFF, 2);
+				}
+
+				/* DAC channelx Configuration */
+				DAC_InitStructure.DAC_Trigger = trgo_source;	// probably TO CHANGE
+				DAC_InitStructure.DAC_WaveGeneration = DAC_WaveGeneration_None;
+				DAC_InitStructure.DAC_OutputBuffer = DAC_OutputBuffer_Enable;
+				DAC_Init(DAC_Channel_var, &DAC_InitStructure);
+
+				DMA_DAC_Config(channel, function);
+
+				/* Enable DAC Channel */
+				DAC_Cmd(DAC_Channel_var, ENABLE);
+			}
+			break;
+			case e_dac_noise:
+			{
+				if (channel == e_dac_channel_1)
+				{
+					/* Set DAC channel1 DHR12RD register */
+					DAC_SetChannel1Data(DAC_Align_12b_R, 0x7FF0);
+					TIM6_Config(90, 1);
+				}
+				else if (channel == e_dac_channel_2)
+				{
+					/* Set DAC channel2 DHR12RD register */
+					DAC_SetChannel2Data(DAC_Align_12b_R, 0x7FF0);
+					TIM7_Config(180, 1);
+				}
+
+				/* DAC channel Configuration */
+				DAC_InitStructure.DAC_Trigger = trgo_source;
+				DAC_InitStructure.DAC_WaveGeneration = DAC_WaveGeneration_Noise;
+				DAC_InitStructure.DAC_LFSRUnmask_TriangleAmplitude = DAC_LFSRUnmask_Bits10_0;
+				DAC_InitStructure.DAC_OutputBuffer = DAC_OutputBuffer_Enable;
+				DAC_Init(DAC_Channel_var, &DAC_InitStructure);
+
+				/* Enable DAC Channel */
+				DAC_Cmd(DAC_Channel_var, ENABLE);
+			}
+			break;
+			case e_dac_triangle:
+			{
+				if (channel == e_dac_channel_1)
+				{
+					/* Set DAC channel1 DHR12RD register */
+					DAC_SetChannel1Data(DAC_Align_12b_R, 0x100);
+					TIM6_Config(90, 1);
+				}
+				else if (channel == e_dac_channel_2)
+				{
+					/* Set DAC channel2 DHR12RD register */
+					DAC_SetChannel2Data(DAC_Align_12b_R, 0x100);
+					TIM7_Config(180, 1);
+				}
+
+				/* DAC channel Configuration */
+				DAC_InitStructure.DAC_Trigger = trgo_source;
+				DAC_InitStructure.DAC_WaveGeneration = DAC_WaveGeneration_Triangle;
+				DAC_InitStructure.DAC_LFSRUnmask_TriangleAmplitude = DAC_TriangleAmplitude_2047;
+				DAC_InitStructure.DAC_OutputBuffer = DAC_OutputBuffer_Enable;
+				DAC_Init(DAC_Channel_var, &DAC_InitStructure);
+
+				/* Enable DAC Channel */
+				DAC_Cmd(DAC_Channel_var, ENABLE);
+			}
+			break;
+			case e_dac_buffer:
+			{
+				if (channel == e_dac_channel_1)
+				{
+					_dac_buffer_index_ch1 = 0;
+					/* Set DAC channel1 DHR12RD register */
+					DAC_SetChannel1Data(DAC_Align_12b_R, 0x050);
+					TIM6_Config(1000, 1);
+
+					gDMA_DAC1_FT_event = RESET;
+					gDMA_DAC1_HT_event = RESET;
+				}
+				else if (channel == e_dac_channel_2)
+				{
+					_dac_buffer_index_ch2 = 0;
+					/* Set DAC channel2 DHR12RD register */
+					DAC_SetChannel2Data(DAC_Align_12b_R, 0x050);
+					TIM7_Config(1000, 1);
+
+					gDMA_DAC2_FT_event = RESET;
+					gDMA_DAC2_HT_event = RESET;
+				}
+
+				/* DAC channel1 Configuration */
+				DAC_InitStructure.DAC_Trigger = trgo_source;	// probably TO CHANGE
+				DAC_InitStructure.DAC_WaveGeneration = DAC_WaveGeneration_None;
+				DAC_InitStructure.DAC_OutputBuffer = DAC_OutputBuffer_Enable;
+				DAC_Init(DAC_Channel_var, &DAC_InitStructure);
+
+				DAC_SoftwareTriggerCmd(DAC_Channel_var, ENABLE);	/* not sure */
+
+				DMA_DAC_Config(channel, function);					/* config DMA for DAC */
+
+				DMA_DAC_NVIC_Configuration(DAC_Channel_var);
+
+				/* Enable DAC Channel */
+				DAC_Cmd(DAC_Channel_var, ENABLE);
+			}
+			break;
+			default:
+			{
+
+			}
+			break;
+
 		}
-		break;
-		case e_dac_sine:
-		{
-			if (channel == e_dac_channel_1)
-			{
-				_dac_buffer_index_ch1 = 0;
-				/* Set DAC channel1 DHR12RD register */
-				DAC_SetChannel1Data(DAC_Align_12b_R, 0x050);
-				TIM6_Config(281, 1);
-			}
-			else if (channel == e_dac_channel_2)
-			{
-				_dac_buffer_index_ch2 = 0;
-				/* Set DAC channel2 DHR12RD register */
-				DAC_SetChannel2Data(DAC_Align_12b_R, 0x050);
-				TIM7_Config(0xFF, 2);
-			}
-
-			/* DAC channelx Configuration */
-			DAC_InitStructure.DAC_Trigger = trgo_source;	// probably TO CHANGE
-			DAC_InitStructure.DAC_WaveGeneration = DAC_WaveGeneration_None;
-			DAC_InitStructure.DAC_OutputBuffer = DAC_OutputBuffer_Enable;
-			DAC_Init(DAC_Channel_var, &DAC_InitStructure);
-
-			DMA_DAC_Config(channel, function);
-		}
-		break;
-		case e_dac_noise:
-		{
-			if (channel == e_dac_channel_1)
-			{
-				/* Set DAC channel1 DHR12RD register */
-				DAC_SetChannel1Data(DAC_Align_12b_R, 0x7FF0);
-				TIM6_Config(90, 1);
-			}
-			else if (channel == e_dac_channel_2)
-			{
-				/* Set DAC channel2 DHR12RD register */
-				DAC_SetChannel2Data(DAC_Align_12b_R, 0x7FF0);
-				TIM7_Config(180, 1);
-			}
-
-			/* DAC channel Configuration */
-			DAC_InitStructure.DAC_Trigger = trgo_source;
-			DAC_InitStructure.DAC_WaveGeneration = DAC_WaveGeneration_Noise;
-			DAC_InitStructure.DAC_LFSRUnmask_TriangleAmplitude = DAC_LFSRUnmask_Bits10_0;
-			DAC_InitStructure.DAC_OutputBuffer = DAC_OutputBuffer_Enable;
-			DAC_Init(DAC_Channel_var, &DAC_InitStructure);
-
-			/* Enable DAC Channel */
-			DAC_Cmd(DAC_Channel_var, ENABLE);
-		}
-		break;
-		case e_dac_triangle:
-		{
-			if (channel == e_dac_channel_1)
-			{
-				/* Set DAC channel1 DHR12RD register */
-				DAC_SetChannel1Data(DAC_Align_12b_R, 0x100);
-				TIM6_Config(90, 1);
-			}
-			else if (channel == e_dac_channel_2)
-			{
-				/* Set DAC channel2 DHR12RD register */
-				DAC_SetChannel2Data(DAC_Align_12b_R, 0x100);
-				TIM7_Config(180, 1);
-			}
-
-			/* DAC channel Configuration */
-			DAC_InitStructure.DAC_Trigger = trgo_source;
-			DAC_InitStructure.DAC_WaveGeneration = DAC_WaveGeneration_Triangle;
-			DAC_InitStructure.DAC_LFSRUnmask_TriangleAmplitude = DAC_TriangleAmplitude_2047;
-			DAC_InitStructure.DAC_OutputBuffer = DAC_OutputBuffer_Enable;
-			DAC_Init(DAC_Channel_var, &DAC_InitStructure);
-
-			/* Enable DAC Channel */
-			DAC_Cmd(DAC_Channel_var, ENABLE);
-		}
-		break;
-		case e_dac_buffer:
-		{
-			if (channel == e_dac_channel_1)
-			{
-				_dac_buffer_index_ch1 = 0;
-				/* Set DAC channel1 DHR12RD register */
-				DAC_SetChannel1Data(DAC_Align_12b_R, 0x050);
-				TIM6_Config(1000, 1);
-
-				gDMA_DAC1_FT_event = RESET;
-				gDMA_DAC1_HT_event = RESET;
-			}
-			else if (channel == e_dac_channel_2)
-			{
-				_dac_buffer_index_ch2 = 0;
-				/* Set DAC channel2 DHR12RD register */
-				DAC_SetChannel2Data(DAC_Align_12b_R, 0x050);
-				TIM7_Config(1000, 1);
-
-				gDMA_DAC2_FT_event = RESET;
-				gDMA_DAC2_HT_event = RESET;
-			}
-
-			/* DAC channel1 Configuration */
-			DAC_InitStructure.DAC_Trigger = trgo_source;	// probably TO CHANGE
-			DAC_InitStructure.DAC_WaveGeneration = DAC_WaveGeneration_None;
-			DAC_InitStructure.DAC_OutputBuffer = DAC_OutputBuffer_Enable;
-			DAC_Init(DAC_Channel_var, &DAC_InitStructure);
-
-			DAC_SoftwareTriggerCmd(DAC_Channel_var, ENABLE);
-
-			DMA_DAC_Config(channel, function);
-
-			DMA_DAC_NVIC_Configuration(DAC_Channel_var);
-		}
-		break;
-		default:
-		{
-
-		}
-		break;
-
 	}
+
 
 	return retVal;
 }
