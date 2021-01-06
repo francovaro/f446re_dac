@@ -299,6 +299,9 @@ static void DMA_DAC_Config(t_dac_channel channel, t_dac_function function)
 		}
 		DMA_Init(DMA1_Stream5, &DMA_InitStructure);
 
+		gDMA_DAC1_FT_event = RESET;
+		gDMA_DAC1_HT_event = RESET;
+
 		DMA_ITConfig(DMA1_Stream5, DMA_IT_TC | DMA_IT_HT,  ENABLE);
 
 		DMA_Cmd(DMA1_Stream5, ENABLE);
@@ -326,6 +329,9 @@ static void DMA_DAC_Config(t_dac_channel channel, t_dac_function function)
 		}
 
 		DMA_Init(DMA1_Stream6, &DMA_InitStructure);
+
+		gDMA_DAC2_FT_event = RESET;
+		gDMA_DAC2_HT_event = RESET;
 
 		DMA_ITConfig(DMA1_Stream6, DMA_IT_TC | DMA_IT_HT,  ENABLE);
 
