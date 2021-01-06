@@ -63,7 +63,7 @@ int main(void)
 			{
 				sum/=SAMPLE_NUMBER;
 				sum = (sum*100)/4096;
-				snprintf(string, sizeof(string), "%d\n", sum);
+				snprintf(string, sizeof(string), "%ld\n", sum);
 				UART_lib_sendData(string, strlen(string));
 			}
 
