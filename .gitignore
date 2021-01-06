@@ -4,3 +4,6 @@
 *.d
 *.d
 /Debug/
+Debug/f446re_dac.bin
+Debug/f446re_dac.elf
+Debug/output.map

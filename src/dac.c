@@ -101,9 +101,6 @@ uint8_t DAC_initialization(t_dac_function function, t_dac_channel channel)
 				DAC_Init(DAC_Channel_var, &DAC_InitStructure);
 
 				DMA_DAC_Config(channel, function);
-
-				/* Enable DAC Channel */
-				DAC_Cmd(DAC_Channel_var, ENABLE);
 			}
 			break;
 			case e_dac_noise:
@@ -192,9 +189,6 @@ uint8_t DAC_initialization(t_dac_function function, t_dac_channel channel)
 				DMA_DAC_Config(channel, function);					/* config DMA for DAC */
 
 				DMA_DAC_NVIC_Configuration(DAC_Channel_var);
-
-				/* Enable DAC Channel */
-				DAC_Cmd(DAC_Channel_var, ENABLE);
 			}
 			break;
 			default:
@@ -274,7 +268,7 @@ static void DMA_DAC_Config(t_dac_channel channel, t_dac_function function)
 
 	DMA_StructInit(&DMA_InitStructure);
 
-	DMA_InitStructure.DMA_Channel = DMA_Channel_7;
+	DMA_InitStructure.DMA_Channel 			 = DMA_Channel_7;
 	DMA_InitStructure.DMA_DIR                = DMA_DIR_MemoryToPeripheral;
 	DMA_InitStructure.DMA_PeripheralInc      = DMA_PeripheralInc_Disable;
 	DMA_InitStructure.DMA_MemoryInc          = DMA_MemoryInc_Enable;
@@ -305,14 +299,14 @@ static void DMA_DAC_Config(t_dac_channel channel, t_dac_function function)
 		}
 		DMA_Init(DMA1_Stream5, &DMA_InitStructure);
 
+		DMA_ITConfig(DMA1_Stream5, DMA_IT_TC | DMA_IT_HT,  ENABLE);
+
 		DMA_Cmd(DMA1_Stream5, ENABLE);
 		while (DMA_GetCmdStatus(DMA1_Stream5) != ENABLE);
-
 
 		DAC_Cmd(DAC_Channel_1, ENABLE);
 		while (DMA_GetCmdStatus(DMA1_Stream5) != ENABLE);
 		DAC_DMACmd(DAC_Channel_1, ENABLE);
-
 	}
 	else if (channel == e_dac_channel_2)
 	{
@@ -332,6 +326,8 @@ static void DMA_DAC_Config(t_dac_channel channel, t_dac_function function)
 		}
 
 		DMA_Init(DMA1_Stream6, &DMA_InitStructure);
+
+		DMA_ITConfig(DMA1_Stream6, DMA_IT_TC | DMA_IT_HT,  ENABLE);
 
 		DMA_Cmd(DMA1_Stream6, ENABLE);
 		while (DMA_GetCmdStatus(DMA1_Stream6) != ENABLE);
@@ -360,7 +356,6 @@ static void DMA_DAC_NVIC_Configuration(t_dac_channel channel)
 	{
 		NVIC_InitStructure.NVIC_IRQChannel = DMA1_Stream6_IRQn;
 	}
-
 
 	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
 	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
